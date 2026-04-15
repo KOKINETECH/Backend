@@ -1,12 +1,10 @@
-import { db } from "../database/mysql";
-import { User } from "../../domain/entities/User";
-import { UserRepository } from "../../domain/repositories/UserRepository";
+// src/domain/repositories/UserRepository.ts
+import { User } from '../entities/User';
 
-export class UserRepositoryImpl implements UserRepository {
-  async create(user: User): Promise<void> {
-    await db.execute(
-      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-      [user.name, user.email, user.password]
-    );
-  }
+export interface UserRepository {
+  findByEmail(email: string): Promise<User | null>;
+  create(user: User): Promise<User>;
+  saveRefreshToken(userId: number, token: string): Promise<void>;
+  findRefreshToken(userId: number, token: string): Promise<boolean>;
+  deleteRefreshToken(token: string): Promise<void>;
 }
